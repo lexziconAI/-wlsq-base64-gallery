@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Asset Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4ECDC4;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            placeholder-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .collection-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .filter-btn.active {
+            background: #4ECDC4;
+            color: #333;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            color: #4ECDC4;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: #4ECDC4;
+            color: #333;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .results-list {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .asset-preview {
+            width: 100%;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .asset-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .asset-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .asset-collection {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .asset-placeholder {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .list-preview {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .list-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .list-info {
+            flex: 1;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #ff6b6b;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .asset-card:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: #4ECDC4;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: unset;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .asset-card {
+                padding: 1rem;
+            }
+
+            .asset-preview {
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Base64 Asset Explorer</h1>
+            <p>Browse and search through 6,203+ converted images</p>
+        </div>
+
+        <div class="stats" id="stats">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+
+        <div class="controls">
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search assets by name...">
+            </div>
+            
+            <div class="collection-filters" id="collectionFilters">
+                <!-- Filters will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">Loading...</div>
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="setView('grid')">Grid</button>
+                <button class="view-btn" onclick="setView('list')">List</button>
+            </div>
+        </div>
+
+        <div class="results-grid" id="resultsGrid">
+            <div class="loading">Loading collections...</div>
+        </div>
+
+        <div class="results-list" id="resultsList">
+            <!-- List view results -->
+        </div>
+    </div>
+
+    <script>
+        let allAssets = [];
+        let filteredAssets = [];
+        let currentView = 'grid';
+        let activeFilter = 'all';
+
+        // Collection configurations
+        const collections = [
+            { name: 'Icons Outline', file: 'tabler_icons_outline.json', key: 'icons-outline', color: '#4ECDC4' },
+            { name: 'Icons Filled', file: 'tabler_icons_filled.json', key: 'icons-filled', color: '#45B7D1' },
+            { name: 'Avatars', file: 'tabler_avatars.json', key: 'avatars', color: '#96CEB4' },
+            { name: 'Illustrations Light', file: 'tabler_illustrations_light.json', key: 'illustrations-light', color: '#FFEAA7' },
+            { name: 'Illustrations Dark', file: 'tabler_illustrations_dark.json', key: 'illustrations-dark', color: '#DDA0DD' }
+        ];
+
+        async function loadCollections() {
+            const loadPromises = collections.map(async (collection) => {
+                try {
+                    const response = await fetch(`base64_collections/${collection.file}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        return {
+                            ...collection,
+                            assets: Object.entries(data).map(([key, base64]) => ({
+                                key,
+                                base64,
+                                collection: collection.key,
+                                collectionName: collection.name
+                            }))
+                        };
+                    }
+                } catch (error) {
+                    console.error(`Failed to load ${collection.name}:`, error);
+                }
+                return { ...collection, assets: [] };
+            });
+
+            const loadedCollections = await Promise.all(loadPromises);
+            
+            // Flatten all assets
+            allAssets = loadedCollections.flatMap(collection => collection.assets);
+            filteredAssets = [...allAssets];
+
+            updateStats(loadedCollections);
+            setupFilters(loadedCollections);
+            renderResults();
+        }
+
+        function updateStats(collections) {
+            const statsHTML = `
+                <div class="stat">
+                    <div class="stat-number">${allAssets.length.toLocaleString()}</div>
+                    <div class="stat-label">Total Assets</div>
+                </div>
+                ${collections.map(collection => `
+                    <div class="stat">
+                        <div class="stat-number">${collection.assets.length.toLocaleString()}</div>
+                        <div class="stat-label">${collection.name}</div>
+                    </div>
+                `).join('')}
+            `;
+            document.getElementById('stats').innerHTML = statsHTML;
+        }
+
+        function setupFilters(collections) {
+            const filtersHTML = `
+                <button class="filter-btn active" onclick="setFilter('all')">All (${allAssets.length})</button>
+                ${collections.map(collection => `
+                    <button class="filter-btn" onclick="setFilter('${collection.key}')">${collection.name} (${collection.assets.length})</button>
+                `).join('')}
+            `;
+            document.getElementById('collectionFilters').innerHTML = filtersHTML;
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter assets
+            if (filter === 'all') {
+                filteredAssets = [...allAssets];
+            } else {
+                filteredAssets = allAssets.filter(asset => asset.collection === filter);
+            }
+
+            // Apply search if active
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm) {
+                applySearch(searchTerm);
+            } else {
+                renderResults();
+            }
+        }
+
+        function setView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Toggle views
+            const gridView = document.getElementById('resultsGrid');
+            const listView = document.getElementById('resultsList');
+            
+            if (view === 'grid') {
+                gridView.style.display = 'grid';
+                listView.style.display = 'none';
+            } else {
+                gridView.style.display = 'none';
+                listView.style.display = 'flex';
+            }
+
+            renderResults();
+        }
+
+        function applySearch(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const baseAssets = activeFilter === 'all' ? allAssets : allAssets.filter(asset => asset.collection === activeFilter);
+            
+            filteredAssets = baseAssets.filter(asset => 
+                asset.key.toLowerCase().includes(term)
+            );
+            
+            renderResults();
+        }
+
+        function renderResults() {
+            const count = filteredAssets.length;
+            document.getElementById('resultsCount').textContent = `${count.toLocaleString()} assets found`;
+
+            if (currentView === 'grid') {
+                renderGridView();
+            } else {
+                renderListView();
+            }
+        }
+
+        function renderGridView() {
+            const container = document.getElementById('resultsGrid');
+            
+            if (filteredAssets.length === 0) {
+                container.innerHTML = '<div class="loading">No assets found</div>';
+                return;
+            }
+
+            // Limit to first 200 for performance
+            const assetsToShow = filteredAssets.slice(0, 200);
+            
+            const html = assetsToShow.map(asset => `
+                <div class="asset-card" onclick="copyPlaceholder('${asset.key}')">
+                    <button class="copy-btn" onclick="event.stopPropagation(); copyPlaceholder('${asset.key}')">Copy</button>
+                    <div class="asset-preview">
+                        <img src="${asset.base64}" alt="${asset.key}" loading="lazy">
+                    </div>
+                    <div class="asset-name">${asset.key}</div>
+                    <div class="asset-collection">${asset.collectionName}</div>
+                    <div class="asset-placeholder">{{ ${asset.key} }}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html + (filteredAssets.length > 200 ? 
+                `<div class="asset-card"><div class="asset-preview" style="background: rgba(255,255,255,0.1); color: white; text-align: center; font-size: 0.9rem;">... and ${(filteredAssets.length - 200).toLocaleString()} more<br><br>Refine your search to see more</div></div>` : 
+                '');
+        }
+
+        function renderListView() {
+            const container = document.getElementById('resultsList');
+            
+            if (filteredAssets.length === 0) {
+                container.innerHTML = '<div class="loading">No assets found</div>';
+                return;
+            }
+
+            // Limit to first 100 for performance in list view
+            const assetsToShow = filteredAssets.slice(0, 100);
+            
+            const html = assetsToShow.map(asset => `
+                <div class="list-item" onclick="copyPlaceholder('${asset.key}')">
+                    <div class="list-preview">
+                        <img src="${asset.base64}" alt="${asset.key}" loading="lazy">
+                    </div>
+                    <div class="list-info">
+                        <div class="asset-name">${asset.key}</div>
+                        <div class="asset-collection">${asset.collectionName}</div>
+                        <div class="asset-placeholder">{{ ${asset.key} }}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html + (filteredAssets.length > 100 ? 
+                `<div class="list-item"><div class="list-info" style="text-align: center; opacity: 0.7;">... and ${(filteredAssets.length - 100).toLocaleString()} more - refine your search to see more</div></div>` : 
+                '');
+        }
+
+        function copyPlaceholder(key) {
+            const placeholder = `{{ ${key} }}`;
+            navigator.clipboard.writeText(placeholder).then(() => {
+                showToast(`Copied: ${placeholder}`);
+            });
+        }
+
+        function showToast(message) {
+            // Simple toast notification
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4ECDC4;
+                color: #333;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            applySearch(e.target.value);
+        });
+
+        // Load collections on page load
+        loadCollections();
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

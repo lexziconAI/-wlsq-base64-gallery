@@ -1,0 +1,31 @@
+{
+  "generated": "2025-10-06 10:37:52",
+  "collections": [
+    {
+      "name": "Tabler Icons Outline",
+      "file": "tabler_icons_outline.json",
+      "count": 4963
+    },
+    {
+      "name": "Tabler Icons Filled",
+      "file": "tabler_icons_filled.json",
+      "count": 981
+    },
+    {
+      "name": "Tabler Avatars",
+      "file": "tabler_avatars.json",
+      "count": 69
+    },
+    {
+      "name": "Tabler Illustrations Light",
+      "file": "tabler_illustrations_light.json",
+      "count": 95
+    },
+    {
+      "name": "Tabler Illustrations Dark",
+      "file": "tabler_illustrations_dark.json",
+      "count": 95
+    }
+  ],
+  "total_images": 6203
+}

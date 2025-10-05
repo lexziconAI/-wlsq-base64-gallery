@@ -50,6 +50,8 @@ def search_collection(collection_name: str, search_term: str, limit: int = 20):
         "icons-outline": "tabler_icons_outline.json", 
         "icons-filled": "tabler_icons_filled.json",
         "avatars": "tabler_avatars.json",
+        "wlsq-avatars": "wlsq_avatars.json",
+        "wlsq": "wlsq_avatars.json",
         "illustrations": "tabler_illustrations_light.json",
         "illustrations-light": "tabler_illustrations_light.json",
         "illustrations-dark": "tabler_illustrations_dark.json"
@@ -95,6 +97,8 @@ def show_random_samples(collection_name: str, count: int = 10):
         "icons-outline": "tabler_icons_outline.json", 
         "icons-filled": "tabler_icons_filled.json",
         "avatars": "tabler_avatars.json",
+        "wlsq-avatars": "wlsq_avatars.json",
+        "wlsq": "wlsq_avatars.json",
         "illustrations": "tabler_illustrations_light.json",
         "illustrations-light": "tabler_illustrations_light.json",
         "illustrations-dark": "tabler_illustrations_dark.json"

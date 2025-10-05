@@ -1,5 +1,5 @@
 {
-  "generated": "2025-10-06 10:37:52",
+  "generated": "2025-10-06 11:05:30",
   "collections": [
     {
       "name": "Tabler Icons Outline",
@@ -25,7 +25,12 @@
       "name": "Tabler Illustrations Dark",
       "file": "tabler_illustrations_dark.json",
       "count": 95
+    },
+    {
+      "name": "WLSQ Brand Avatars",
+      "file": "wlsq_avatars.json",
+      "count": 33
     }
   ],
-  "total_images": 6203
+  "total_images": 6236
 }

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WLSQ Floating Animation Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 800px;
+        }
+
+        /* Floating woman sitting - gentle bob */
+        .floating-1 {
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            width: 200px;
+            animation: float-gentle 6s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+            z-index: 3;
+        }
+
+        /* Floating woman walking - diagonal drift */
+        .floating-2 {
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            width: 180px;
+            animation: float-diagonal 8s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+            z-index: 2;
+        }
+
+        /* Arrow - spin and float */
+        .floating-3 {
+            position: absolute;
+            bottom: 20%;
+            left: 25%;
+            width: 120px;
+            animation: spin-float 10s linear infinite;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+            z-index: 4;
+        }
+
+        /* Logo - pulse and glow */
+        .floating-4 {
+            position: absolute;
+            top: 5%;
+            right: 20%;
+            width: 250px;
+            animation: pulse-glow 4s ease-in-out infinite;
+            z-index: 5;
+        }
+
+        /* Wave transition - slide across */
+        .floating-5 {
+            position: absolute;
+            bottom: 5%;
+            right: 15%;
+            width: 400px;
+            animation: wave-slide 7s ease-in-out infinite;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        /* Animation keyframes */
+        @keyframes float-gentle {
+            0%, 100% {
+                transform: translateY(0px) rotate(-2deg);
+            }
+            50% {
+                transform: translateY(-30px) rotate(2deg);
+            }
+        }
+
+        @keyframes float-diagonal {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(-20px, -15px) scale(1.05);
+            }
+            50% {
+                transform: translate(-30px, 20px) scale(0.95);
+            }
+            75% {
+                transform: translate(-10px, 10px) scale(1.02);
+            }
+        }
+
+        @keyframes spin-float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(138, 116, 249, 0.5));
+            }
+            50% {
+                transform: scale(1.08);
+                filter: drop-shadow(0 0 40px rgba(138, 116, 249, 0.9));
+            }
+        }
+
+        @keyframes wave-slide {
+            0%, 100% {
+                transform: translateX(0) scaleX(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateX(-30px) scaleX(1.05);
+                opacity: 1;
+            }
+        }
+
+        /* Hover effects */
+        .floating-1:hover {
+            animation-play-state: paused;
+            transform: scale(1.15) rotate(5deg);
+            transition: transform 0.3s ease;
+        }
+
+        .floating-2:hover {
+            animation-play-state: paused;
+            transform: scale(1.15);
+            transition: transform 0.3s ease;
+        }
+
+        .floating-3:hover {
+            animation-play-state: paused;
+            transform: scale(1.3);
+            transition: transform 0.3s ease;
+        }
+
+        .floating-4:hover {
+            animation-play-state: paused;
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .floating-5:hover {
+            animation-play-state: paused;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .container {
+                height: 600px;
+            }
+            .floating-1, .floating-2 {
+                width: 150px;
+            }
+            .floating-3 {
+                width: 100px;
+            }
+            .floating-4 {
+                width: 200px;
+            }
+            .floating-5 {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 500px;
+            }
+            .floating-1 {
+                top: 5%;
+                left: 5%;
+                width: 120px;
+            }
+            .floating-2 {
+                top: 60%;
+                right: 5%;
+                width: 110px;
+            }
+            .floating-3 {
+                bottom: 30%;
+                left: 10%;
+                width: 80px;
+            }
+            .floating-4 {
+                top: 2%;
+                right: 5%;
+                width: 150px;
+            }
+            .floating-5 {
+                bottom: 5%;
+                right: 5%;
+                width: 200px;
+            }
+        }
+
+        /* Title overlay */
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .title h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: title-glow 3s ease-in-out infinite;
+        }
+
+        .title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        @keyframes title-glow {
+            0%, 100% {
+                text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 4px 30px rgba(255, 255, 255, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Image 1: Woman sitting - gentle floating -->
+        <img src="{{Sitting2_NOPROCESS_}}" 
+             alt="Woman sitting on block" 
+             class="floating-1">
+
+        <!-- Image 2: Woman walking - diagonal drift -->
+        <img src="{{Walking_NOPROCESS_}}" 
+             alt="Woman walking" 
+             class="floating-2">
+
+        <!-- Image 3: Teal arrow - spinning -->
+        <img src="{{teal arrow}}" 
+             alt="Teal arrow" 
+             class="floating-3">
+
+        <!-- Image 4: WLSQ Logo - pulsing with glow -->
+        <img src="{{WLSQ Master Image}}" 
+             alt="WLSQ Logo" 
+             class="floating-4">
+
+        <!-- Image 5: Wave transition - sliding -->
+        <img src="{{WLSQTransitions1_NOPROCESS_}}" 
+             alt="Wave transition" 
+             class="floating-5">
+
+        <!-- Title overlay -->
+        <div class="title">
+            <h1>WLSQ Floating Gallery</h1>
+            <p>Hover over elements to pause animation</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -54,7 +54,9 @@ def search_collection(collection_name: str, search_term: str, limit: int = 20):
         "wlsq": "wlsq_avatars.json",
         "illustrations": "tabler_illustrations_light.json",
         "illustrations-light": "tabler_illustrations_light.json",
-        "illustrations-dark": "tabler_illustrations_dark.json"
+        "illustrations-dark": "tabler_illustrations_dark.json",
+        "wlsq-illustrations-light": "wlsq_illustrations_light.json",
+        "wlsq-illustrations-dark": "wlsq_illustrations_dark.json"
     }
     
     if collection_name not in collections_map:
@@ -101,7 +103,9 @@ def show_random_samples(collection_name: str, count: int = 10):
         "wlsq": "wlsq_avatars.json",
         "illustrations": "tabler_illustrations_light.json",
         "illustrations-light": "tabler_illustrations_light.json",
-        "illustrations-dark": "tabler_illustrations_dark.json"
+        "illustrations-dark": "tabler_illustrations_dark.json",
+        "wlsq-illustrations-light": "wlsq_illustrations_light.json",
+        "wlsq-illustrations-dark": "wlsq_illustrations_dark.json"
     }
     
     if collection_name not in collections_map:

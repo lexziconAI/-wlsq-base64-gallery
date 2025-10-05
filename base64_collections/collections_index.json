@@ -1,36 +1,38 @@
 {
-  "generated": "2025-10-06 11:05:30",
-  "collections": [
-    {
+  "generated": "2025-10-06 11:16:23",
+  "total_images": 6426,
+  "collections": {
+    "tabler_icons_outline.json": {
       "name": "Tabler Icons Outline",
-      "file": "tabler_icons_outline.json",
       "count": 4963
     },
-    {
+    "tabler_icons_filled.json": {
       "name": "Tabler Icons Filled",
-      "file": "tabler_icons_filled.json",
       "count": 981
     },
-    {
+    "tabler_avatars.json": {
       "name": "Tabler Avatars",
-      "file": "tabler_avatars.json",
       "count": 69
     },
-    {
+    "tabler_illustrations_light.json": {
       "name": "Tabler Illustrations Light",
-      "file": "tabler_illustrations_light.json",
       "count": 95
     },
-    {
+    "tabler_illustrations_dark.json": {
       "name": "Tabler Illustrations Dark",
-      "file": "tabler_illustrations_dark.json",
       "count": 95
     },
-    {
+    "wlsq_avatars.json": {
       "name": "WLSQ Brand Avatars",
-      "file": "wlsq_avatars.json",
       "count": 33
+    },
+    "wlsq_illustrations_light.json": {
+      "name": "WLSQ Illustrations Light",
+      "count": 95
+    },
+    "wlsq_illustrations_dark.json": {
+      "name": "WLSQ Illustrations Dark",
+      "count": 95
     }
-  ],
-  "total_images": 6236
+  }
 }

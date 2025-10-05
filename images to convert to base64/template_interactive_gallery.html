@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WLSQ Interactive Character Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(138, 116, 249, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(102, 126, 234, 0.3) 0%, transparent 50%);
+            animation: backgroundPulse 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            width: 200px;
+            margin: 0 auto 2rem;
+            animation: fadeInDown 1s ease;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease 0.2s both;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            animation: fadeInDown 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Gallery container */
+        .gallery {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Character cards with glassmorphism */
+        .character-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease both;
+        }
+
+        .character-card:nth-child(1) { animation-delay: 0.1s; }
+        .character-card:nth-child(2) { animation-delay: 0.2s; }
+        .character-card:nth-child(3) { animation-delay: 0.3s; }
+        .character-card:nth-child(4) { animation-delay: 0.4s; }
+        .character-card:nth-child(5) { animation-delay: 0.5s; }
+        .character-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(255, 255, 255, 0.15),
+                transparent
+            );
+            animation: cardRotate 6s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .character-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes cardRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .character-image {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .character-card:hover .character-image {
+            transform: scale(1.05);
+        }
+
+        .character-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .character-role {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .click-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Modal panel */
+        .modal-panel {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .modal-overlay.active .modal-panel {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .modal-header {
+            position: relative;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-character-image {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            margin: 0 auto 2rem;
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.4));
+            animation: modalImageFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes modalImageFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .modal-body {
+            padding: 0 3rem 3rem;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-section h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-section h3::before {
+            content: '●';
+            color: #4ECDC4;
+            font-size: 1.5rem;
+        }
+
+        .info-section p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Decorative wave */
+        .decorative-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .modal-panel {
+                border-radius: 24px;
+                max-height: 90vh;
+            }
+
+            .modal-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .modal-body {
+                padding: 0 1.5rem 2rem;
+            }
+
+            .modal-title {
+                font-size: 2rem;
+            }
+
+            .character-image {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative wave at bottom -->
+    <img src="{{WLSQTransitions1_NOPROCESS_}}" class="decorative-wave" alt="">
+
+    <!-- Header -->
+    <header class="header">
+        <img src="{{WLSQ Master Image}}" class="logo" alt="WLSQ Logo">
+        <h1>Our Community</h1>
+        <p>Click on any character to learn their story</p>
+    </header>
+
+    <!-- Character Gallery -->
+    <div class="gallery">
+        <!-- Character 1: Sitting Woman -->
+        <div class="character-card" onclick="openModal('modal1')">
+            <img src="{{Sitting2_NOPROCESS_}}" class="character-image" alt="Woman sitting on block">
+            <h3 class="character-name">Sarah Chen</h3>
+            <p class="character-role">Community Advocate</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+
+        <!-- Character 2: Walking Woman -->
+        <div class="character-card" onclick="openModal('modal2')">
+            <img src="{{Walking_NOPROCESS_}}" class="character-image" alt="Woman walking">
+            <h3 class="character-name">Maya Rodriguez</h3>
+            <p class="character-role">Support Coordinator</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+
+        <!-- Character 3: Profile Woman -->
+        <div class="character-card" onclick="openModal('modal3')">
+            <img src="{{lady1}}" class="character-image" alt="Woman profile">
+            <h3 class="character-name">Emma Thompson</h3>
+            <p class="character-role">Legal Counselor</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+
+        <!-- Character 4: Woman in Hijab -->
+        <div class="character-card" onclick="openModal('modal4')">
+            <img src="{{lady2}}" class="character-image" alt="Woman in hijab">
+            <h3 class="character-name">Amira Hassan</h3>
+            <p class="character-role">Cultural Liaison</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+
+        <!-- Character 5: Woman with Sign -->
+        <div class="character-card" onclick="openModal('modal5')">
+            <img src="{{lady4}}" class="character-image" alt="Woman with protest sign">
+            <h3 class="character-name">Jordan Lee</h3>
+            <p class="character-role">Rights Activist</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+
+        <!-- Character 6: Side Profile -->
+        <div class="character-card" onclick="openModal('modal6')">
+            <img src="{{lady1.5}}" class="character-image" alt="Woman side profile">
+            <h3 class="character-name">Sophia Patel</h3>
+            <p class="character-role">Education Officer</p>
+            <p class="click-hint">Click to learn more</p>
+        </div>
+    </div>
+
+    <!-- Modal 1: Sarah Chen -->
+    <div class="modal-overlay" id="modal1">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal1')">&times;</button>
+                <img src="{{Sitting2_NOPROCESS_}}" class="modal-character-image" alt="Sarah Chen">
+                <h2 class="modal-title">Sarah Chen</h2>
+                <p class="modal-subtitle">Community Advocate</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Sarah has been with WLSQ for over five years, specializing in community outreach and advocacy. Her passion for empowering women through education and legal support has helped hundreds of individuals navigate complex legal situations.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Family law, domestic violence support, community education programs, and multilingual client services. Sarah speaks Mandarin, Cantonese, and English fluently.</p>
+                    <div class="tags">
+                        <span class="tag">Community Outreach</span>
+                        <span class="tag">Advocacy</span>
+                        <span class="tag">Multilingual</span>
+                        <span class="tag">Education</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>Over 300 families supported • 50+ community workshops delivered • 5 years of service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Maya Rodriguez -->
+    <div class="modal-overlay" id="modal2">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal2')">&times;</button>
+                <img src="{{Walking_NOPROCESS_}}" class="modal-character-image" alt="Maya Rodriguez">
+                <h2 class="modal-title">Maya Rodriguez</h2>
+                <p class="modal-subtitle">Support Coordinator</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Maya coordinates support services across Queensland, ensuring clients receive comprehensive assistance. Her background in social work and community development brings a holistic approach to client care.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Case management, crisis intervention, resource coordination, and building partnerships with community organizations to expand service accessibility.</p>
+                    <div class="tags">
+                        <span class="tag">Coordination</span>
+                        <span class="tag">Crisis Support</span>
+                        <span class="tag">Case Management</span>
+                        <span class="tag">Partnerships</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>200+ coordinated referrals • 30+ partner organizations • Regional service expansion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Emma Thompson -->
+    <div class="modal-overlay" id="modal3">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal3')">&times;</button>
+                <img src="{{lady1}}" class="modal-character-image" alt="Emma Thompson">
+                <h2 class="modal-title">Emma Thompson</h2>
+                <p class="modal-subtitle">Legal Counselor</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Emma provides expert legal counseling with a focus on family law and women's rights. Her compassionate approach combined with extensive legal knowledge creates a safe space for clients to discuss sensitive matters.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Family law, protection orders, property settlement, child custody matters, and legal rights education for vulnerable communities.</p>
+                    <div class="tags">
+                        <span class="tag">Legal Counseling</span>
+                        <span class="tag">Family Law</span>
+                        <span class="tag">Protection Orders</span>
+                        <span class="tag">Rights Education</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>500+ legal consultations • 150+ successful protection orders • 10 years legal practice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Amira Hassan -->
+    <div class="modal-overlay" id="modal4">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal4')">&times;</button>
+                <img src="{{lady2}}" class="modal-character-image" alt="Amira Hassan">
+                <h2 class="modal-title">Amira Hassan</h2>
+                <p class="modal-subtitle">Cultural Liaison</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Amira bridges cultural gaps to ensure WLSQ services are accessible and respectful of diverse backgrounds. Her deep understanding of multicultural communities helps create inclusive support pathways.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Culturally responsive practice, community engagement with diverse populations, interpretation services coordination, and developing culturally appropriate resources.</p>
+                    <div class="tags">
+                        <span class="tag">Cultural Liaison</span>
+                        <span class="tag">Inclusive Practice</span>
+                        <span class="tag">Community Engagement</span>
+                        <span class="tag">Multilingual Services</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>15+ cultural communities served • 40+ culturally adapted programs • Fluent in 4 languages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Jordan Lee -->
+    <div class="modal-overlay" id="modal5">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal5')">&times;</button>
+                <img src="{{lady4}}" class="modal-character-image" alt="Jordan Lee">
+                <h2 class="modal-title">Jordan Lee</h2>
+                <p class="modal-subtitle">Rights Activist</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Jordan advocates for systemic change through policy work, public awareness campaigns, and grassroots activism. Their dedication to women's rights drives meaningful legislative improvements.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Policy advocacy, public campaigning, legislative reform, media engagement, and mobilizing community action for social justice causes.</p>
+                    <div class="tags">
+                        <span class="tag">Activism</span>
+                        <span class="tag">Policy Reform</span>
+                        <span class="tag">Public Awareness</span>
+                        <span class="tag">Social Justice</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>3 policy changes implemented • 20+ public campaigns • 1000+ community members mobilized</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 6: Sophia Patel -->
+    <div class="modal-overlay" id="modal6">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('modal6')">&times;</button>
+                <img src="{{lady1.5}}" class="modal-character-image" alt="Sophia Patel">
+                <h2 class="modal-title">Sophia Patel</h2>
+                <p class="modal-subtitle">Education Officer</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>About</h3>
+                    <p>Sophia develops and delivers educational programs that empower women with knowledge about their legal rights, available services, and pathways to support. Her workshops are known for being both informative and transformative.</p>
+                </div>
+                <div class="info-section">
+                    <h3>Expertise</h3>
+                    <p>Educational program design, workshop facilitation, curriculum development, digital learning platforms, and creating accessible legal education materials.</p>
+                    <div class="tags">
+                        <span class="tag">Education</span>
+                        <span class="tag">Workshop Facilitation</span>
+                        <span class="tag">Curriculum Design</span>
+                        <span class="tag">Digital Learning</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3>Impact</h3>
+                    <p>100+ workshops delivered • 2000+ participants educated • 15+ educational resources created</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on background click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
